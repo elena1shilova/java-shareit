@@ -1,19 +1,17 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDto {
+public class User {
 
     private Integer id;
     private String name;
-    private String description;
-    private Boolean available;
-    private Integer request;
+    private String email;
 }
