@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 @Service
@@ -15,12 +14,12 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public UserDto create(@RequestBody User user) {
-        return userStorage.create(user);
+    public UserDto create(@RequestBody UserDto userDto) {
+        return userStorage.create(userDto);
     }
 
-    public UserDto update(User newUser) {
-        return userStorage.update(newUser);
+    public UserDto update(UserDto newDtoUser) {
+        return userStorage.update(newDtoUser);
     }
 
     public UserDto getById(Integer id) {

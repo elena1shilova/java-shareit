@@ -23,12 +23,13 @@ public class InMemoryUserStorage implements UserStorage {
     private Integer userId = 1;
 
     @Override
-    public UserDto create(User user) {
+    public UserDto create(UserDto userDto) {
 
-        if (user.getEmail() == null) {
+        if (userDto.getEmail() == null) {
             throw new ValidationException("Имейл должен быть указан");
         }
 
+        User user = UserMapper.toUser(userDto);
         validUser(user);
         user.setId(userId);
         userId++;
@@ -39,10 +40,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public UserDto update(User newUser) {
-        if (newUser.getId() == null) {
+    public UserDto update(UserDto newDtoUser) {
+        if (newDtoUser.getId() == null) {
             throw new RuntimeException("Id должен быть указан");
         }
+
+        User newUser = UserMapper.toUser(newDtoUser);
 
         if (users.containsKey(newUser.getId())) {
 
