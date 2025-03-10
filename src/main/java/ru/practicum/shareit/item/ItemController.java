@@ -25,6 +25,7 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
+
     @PostMapping
     public ItemDto create(@NotNull @Validated(OnCreate.class) @RequestBody ItemDto itemDto, @NotNull @RequestHeader("X-Sharer-User-Id") Integer userId) {
         return itemService.create(itemDto, userId);
