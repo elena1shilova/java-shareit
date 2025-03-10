@@ -1,17 +1,20 @@
 package ru.practicum.shareit.user.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import ru.practicum.shareit.marker.OnCreate;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
 
     private Integer id;
     private String name;
+    @Email
+    @NotBlank(groups = OnCreate.class)
     private String email;
 }
