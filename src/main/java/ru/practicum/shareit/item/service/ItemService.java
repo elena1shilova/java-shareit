@@ -48,7 +48,12 @@ public class ItemService {
         if (!Objects.equals(item.getOwner().getId(), userId)) {
             throw new ElementNotFoundException("Идентификаторы создателя и пользователя, изменяющего инф-ию о вещи, не совпадают");
         }
-        return itemStorage.update(item, itemDto);
+
+        item.setName(itemDto.getName() != null ? itemDto.getName() : item.getName());
+        item.setDescription(itemDto.getDescription() != null ? itemDto.getDescription() : item.getDescription());
+        item.setAvailable(itemDto.getAvailable() != null ? itemDto.getAvailable() : item.getAvailable());
+
+        return ItemMapper.toItemDto(itemStorage.update(item));
     }
 
     public List<ItemDto> getAll(Integer userId) {

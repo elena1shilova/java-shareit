@@ -2,8 +2,6 @@ package ru.practicum.shareit.item.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.HashMap;
@@ -32,11 +30,9 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public ItemDto update(Item item, ItemDto itemDto) {
-        item.setName(itemDto.getName() != null ? itemDto.getName() : item.getName());
-        item.setDescription(itemDto.getDescription() != null ? itemDto.getDescription() : item.getDescription());
-        item.setAvailable(itemDto.getAvailable() != null ? itemDto.getAvailable() : item.getAvailable());
-        return ItemMapper.toItemDto(item);
+    public Item update(Item item) {
+
+        return items.put(item.getId(), item);
     }
 
     @Override
