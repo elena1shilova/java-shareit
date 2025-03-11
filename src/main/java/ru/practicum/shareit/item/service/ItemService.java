@@ -31,7 +31,9 @@ public class ItemService {
             throw new ElementNotFoundException(MessageFormat.format("Пользователь с ид {0} не найден", userId));
         }
 
-        return ItemMapper.toItemDto(itemStorage.create(item, userId, user));
+        item.setOwner(user);
+
+        return ItemMapper.toItemDto(itemStorage.create(item));
     }
 
     public ItemDto getById(Integer itemId) {

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +18,7 @@ public class InMemoryItemStorage implements ItemStorage {
     private Integer itemId = 1;
 
     @Override
-    public Item create(Item item, Integer userId, User user) {
-        item.setOwner(user);
+    public Item create(Item item) {
         item.setId(itemId);
         itemId++;
         items.put(item.getId(), item);

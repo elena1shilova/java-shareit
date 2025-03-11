@@ -8,7 +8,7 @@ public interface UserStorage {
 
     User create(User userDto);
 
-    User update(Integer id, User newUser);
+    User update(User newUser);
 
     User getById(Integer id);
 

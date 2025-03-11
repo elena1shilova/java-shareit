@@ -40,8 +40,17 @@ public class UserService {
         if (user.isPresent() && !newUser.getId().equals(user.get().getId())) {
             throw new RuntimeException("Такой email уже зарегистрирован");
         }
-        if (userStorage.getById(id) != null) {
-            return UserMapper.toUserDto(userStorage.update(id, newUser));
+        User oldUser = userStorage.getById(id);
+
+        if (oldUser != null) {
+            newUser.setId(id);
+            if (newUser.getEmail() != null) {
+                oldUser.setEmail(newUser.getEmail());
+            }
+            if (newUser.getName() != null) {
+                oldUser.setName(newUser.getName());
+            }
+            return UserMapper.toUserDto(userStorage.update(oldUser));
         }
         throw new ElementNotFoundException(MessageFormat.format("id = {0} не найден", newUser.getId()));
 
