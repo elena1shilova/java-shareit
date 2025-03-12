@@ -7,7 +7,7 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.text.MessageFormat;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
     public UserDto create(UserDto userDto) {
 
@@ -25,52 +25,49 @@ public class UserService {
         }
 
         User user = UserMapper.toUser(userDto);
-        if (userStorage.getUserForEmail(userDto.getEmail()).isPresent()) {
+        if (userRepository.findByEmailIgnoreCase(user.getEmail()).isPresent()) {
             throw new RuntimeException("Такой email уже зарегистрирован");
         }
-        return UserMapper.toUserDto(userStorage.create(user));
+
+        return UserMapper.toUserDto(userRepository.save(user));
     }
 
     public UserDto update(Integer id, UserDto newDtoUser) {
-        if (userStorage.getById(id) == null) {
+
+        Optional<User> oldUser = userRepository.findById(id);
+
+        if (oldUser.isEmpty()) {
             throw new ElementNotFoundException(MessageFormat.format("Пользователь с ид {0} не найден", id));
         }
         User newUser = UserMapper.toUser(newDtoUser);
-        Optional<User> user = userStorage.getUserForEmail(newDtoUser.getEmail());
+        Optional<User> user = userRepository.findByEmailIgnoreCase(newDtoUser.getEmail());
         if (user.isPresent() && !newUser.getId().equals(user.get().getId())) {
             throw new RuntimeException("Такой email уже зарегистрирован");
         }
-        User oldUser = userStorage.getById(id);
 
-        if (oldUser != null) {
-            newUser.setId(id);
-            if (newUser.getEmail() != null) {
-                oldUser.setEmail(newUser.getEmail());
-            }
-            if (newUser.getName() != null) {
-                oldUser.setName(newUser.getName());
-            }
-            return UserMapper.toUserDto(userStorage.update(oldUser));
+        newUser.setId(id);
+        if (newUser.getEmail() != null) {
+            oldUser.get().setEmail(newUser.getEmail());
         }
-        throw new ElementNotFoundException(MessageFormat.format("id = {0} не найден", newUser.getId()));
-
+        if (newUser.getName() != null) {
+            oldUser.get().setName(newUser.getName());
+        }
+        return UserMapper.toUserDto(userRepository.save(oldUser.get()));
     }
 
     public UserDto getById(Integer id) {
-        User user = userStorage.getById(id);
-        if (user != null) {
-            return UserMapper.toUserDto(userStorage.getById(id));
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return UserMapper.toUserDto(user.get());
         }
         throw new ElementNotFoundException(MessageFormat.format("id = {0} не найден", id));
-
-
     }
 
     public void delete(Integer id) {
 
-        User user = userStorage.getById(id);
-        if (user != null) {
-            userStorage.delete(id);
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            userRepository.delete(user.get());
         } else {
             throw new ElementNotFoundException(MessageFormat.format("id = {0} не найден", id));
         }
