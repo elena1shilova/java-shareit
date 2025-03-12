@@ -63,15 +63,14 @@ public class ItemService {
     }
 
     public List<ItemDto> getAll(Integer userId) {
-        return itemRepository.findAll().stream()
-                .filter(item -> item.getOwner().getId().equals(userId))
+        return itemRepository.findByOwnerId(userId).stream()
                 .map(ItemMapper::toItemDto)
                 .toList();
     }
 
     public List<ItemDto> searchText(String text) {
         if (!text.isEmpty()) {
-            return itemRepository.findByNameIgnoreCaseOrDescriptionIgnoreCase(text, text).stream()
+            return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text).stream()
                     .filter(Item::getAvailable)
                     .map(ItemMapper::toItemDto)
                     .toList();
