@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.enums.State;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -15,6 +16,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,11 +64,65 @@ public class BookingServiceImpl implements BookingService {
         throw new ValidationException(MessageFormat.format("пользователь id = {0} не является владельцем вещи", userId));
     }
 
+    @Override
+    public BookingDto findByIdBooking(Integer bookingId, Integer userId) {
+        Booking booking = findById(bookingId);
+
+        if (booking.getItem().getOwner().getId().equals(userId) || booking.getBooker().getId().equals(userId)) {
+            return BookingMapper.toBookingDto(booking);
+        }
+
+        throw new ValidationException(MessageFormat.format("пользователь id = {0} не является ни владельцем вещи, ни автором бронирования", userId));
+    }
+
+    @Override
+    public List<BookingDto> findAllForState(State state, Integer userId) {
+
+        return getBookingList(state, userId).stream()
+                .map(BookingMapper::toBookingDto)
+                .toList();
+    }
+
+    @Override
+    public List<BookingDto> findAllOwnerForState(State state, Integer userId) {
+
+        List<Booking> bookings = getBookingList(state, userId);
+        if (bookings != null && !bookings.isEmpty()) {
+            return bookings.stream()
+                    .map(BookingMapper::toBookingDto)
+                    .toList();
+        }
+        throw new RuntimeException(MessageFormat.format("Пользователь с ид {0} не является владельцем даже одной вещи", userId));
+    }
+
+    private List<Booking> getBookingList(State state, Integer userId) {
+        if (state.equals(State.ALL)) {
+            return bookingRepository.findAllByBooker_IdOrderByStart(userId);
+        } else {
+            return bookingRepository.findAllByStatusEqualsAndBooker_IdOrderByStart(getStatusByState(state), userId);
+        }
+    }
+
+    private Status getStatusByState(State state) {
+        switch (state) {
+            case CURRENT:
+            case FUTURE:
+            case REJECTED:
+                return Status.REJECTED;
+            case WAITING:
+                return Status.WAITING;
+            case PAST:
+                return Status.APPROVED;
+            default:
+                throw new IllegalArgumentException(MessageFormat.format("Некорректное значение state: ", state));
+        }
+    }
+
     private Booking findById(Integer id) {
         Optional<Booking> booking = bookingRepository.findById(id);
         if (booking.isPresent()) {
             return booking.get();
         }
-        throw new ElementNotFoundException(MessageFormat.format("бронирование с id = {0} не найдено", id));
+        throw new ElementNotFoundException(MessageFormat.format("Бронирование с id = {0} не найдено", id));
     }
 }

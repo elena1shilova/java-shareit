@@ -7,12 +7,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
+
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -33,4 +36,8 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "request_id")
     private ItemRequest request;
+    @Transient
+    private LocalDateTime start;
+    @Transient
+    private LocalDateTime end;
 }

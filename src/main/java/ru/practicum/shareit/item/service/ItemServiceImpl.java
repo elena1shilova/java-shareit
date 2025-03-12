@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.ElementNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -23,6 +25,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
 
     private final ItemRepository itemRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
     public ItemDto create(ItemDto itemDto, Integer userId) {
@@ -42,7 +45,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto getById(Integer itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
         if (item.isPresent()) {
-            return ItemMapper.toItemDto(item.get());
+            return ItemMapper.toItemDto(getItemStartAndEndData(item.get()));
         }
         throw new ElementNotFoundException(MessageFormat.format("id = {0} не найден", itemId));
     }
@@ -67,8 +70,18 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getAll(Integer userId) {
         return itemRepository.findByOwnerId(userId).stream()
+                .map(this::getItemStartAndEndData)
                 .map(ItemMapper::toItemDto)
                 .toList();
+    }
+
+    private Item getItemStartAndEndData(Item item) {
+        Booking booking = bookingRepository.findByItem_Id(item.getId());
+        if (booking != null) {
+            item.setStart(booking.getStart());
+            item.setEnd(booking.getEnd());
+        }
+        return item;
     }
 
     @Override
