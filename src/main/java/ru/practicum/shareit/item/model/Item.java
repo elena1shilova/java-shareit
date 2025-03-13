@@ -40,6 +40,4 @@ public class Item {
     private LocalDateTime start;
     @Transient
     private LocalDateTime end;
-//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Comment> comments = new ArrayList<>();
 }

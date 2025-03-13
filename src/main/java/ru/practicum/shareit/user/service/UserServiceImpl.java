@@ -20,10 +20,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto userDto) {
 
-//        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
-//            throw new ValidationException("Email при создании пользователя должен быть указан");
-//        }
-
         User user = UserMapper.toUser(userDto);
         if (userRepository.findByEmailIgnoreCase(user.getEmail()).isPresent()) {
             throw new RuntimeException("Такой email уже зарегистрирован");
