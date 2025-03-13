@@ -15,8 +15,7 @@ public class ItemMapper {
                 item.getAvailable(),
                 item.getOwner(),
                 item.getRequest() != null ? item.getRequest().getId() : null,
-                item.getStart() != null ? item.getStart() : null,
-                item.getEnd() != null ? item.getEnd() : null
+                null, null, null
         );
     }
 
@@ -28,8 +27,8 @@ public class ItemMapper {
                 itemDto.getAvailable(),
                 itemDto.getOwner(),
                 null,
-                itemDto.getStart() != null ? itemDto.getStart() : null,
-                itemDto.getEnd() != null ? itemDto.getEnd() : null
+                itemDto.getLastBooking() != null ? itemDto.getLastBooking().getStart() : null,
+                itemDto.getLastBooking() != null ? itemDto.getLastBooking().getEnd() : null
         );
     }
 }

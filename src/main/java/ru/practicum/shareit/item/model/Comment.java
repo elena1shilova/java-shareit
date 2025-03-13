@@ -7,12 +7,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -22,24 +20,25 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "items", schema = "public")
-public class Item {
+@Table(name = "comments", schema = "public")
+public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String name;
-    private String description;
-    private Boolean available;
+    private String text;
     @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private User owner;
+    @JoinColumn(name = "item_id")
+    private Item item;
     @ManyToOne
-    @JoinColumn(name = "request_id")
-    private ItemRequest request;
-    @Transient
-    private LocalDateTime start;
-    @Transient
-    private LocalDateTime end;
-//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Comment> comments = new ArrayList<>();
+    @JoinColumn(name = "author_id")
+    private User author;
+    private LocalDateTime created;
+
+    public Comment(String text, Item item, User author, LocalDateTime now) {
+        this.text = text;
+        this.item = item;
+        this.author = author;
+        this.created = now;
+    }
 }

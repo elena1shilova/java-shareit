@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.marker.OnCreate;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/items")
@@ -27,7 +29,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto create(@NotNull @Validated(OnCreate.class) @RequestBody ItemDto itemDto, @NotNull @RequestHeader("X-Sharer-User-Id") Integer userId) {
+    public ItemDto create(@NotNull @Validated(OnCreate.class) @RequestBody ItemDto itemDto,
+                          @NotNull @RequestHeader("X-Sharer-User-Id") Integer userId) {
         return itemService.create(itemDto, userId);
     }
 
@@ -50,5 +53,12 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> searchText(@NotNull @RequestParam String text) {
         return itemService.searchText(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@NotNull @RequestBody Map<String, String> requestBody,
+                                    @NotNull @PathVariable Integer itemId,
+                                    @NotNull @RequestHeader("X-Sharer-User-Id") Integer userId) {
+        return itemService.createComment(requestBody.get("text"), itemId, userId);
     }
 }
