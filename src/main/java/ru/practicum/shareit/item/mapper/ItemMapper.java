@@ -14,7 +14,8 @@ public class ItemMapper {
                 item.getDescription(),
                 item.getAvailable(),
                 item.getOwner(),
-                item.getRequest() != null ? item.getRequest().getId() : null
+                item.getRequest() != null ? item.getRequest().getId() : null,
+                null, null, null
         );
     }
 
@@ -25,7 +26,9 @@ public class ItemMapper {
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
                 itemDto.getOwner(),
-                null
+                null,
+                itemDto.getLastBooking() != null ? itemDto.getLastBooking().getStart() : null,
+                itemDto.getLastBooking() != null ? itemDto.getLastBooking().getEnd() : null
         );
     }
 }
