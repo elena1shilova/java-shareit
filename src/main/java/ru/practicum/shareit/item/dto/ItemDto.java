@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Comment;
-import ru.practicum.shareit.item.model.DateDto;
 import ru.practicum.shareit.marker.OnCreate;
 import ru.practicum.shareit.user.model.User;
 

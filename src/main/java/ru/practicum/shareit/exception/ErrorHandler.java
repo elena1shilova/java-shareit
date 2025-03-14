@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(value = "ru.practicum.shareit")
+@RestControllerAdvice
 public class ErrorHandler {
 
     @ExceptionHandler

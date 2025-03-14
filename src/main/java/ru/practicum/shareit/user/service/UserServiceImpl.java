@@ -31,11 +31,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(Integer id, UserDto newDtoUser) {
 
-        Optional<User> oldUser = userRepository.findById(id);
+        User oldUser = userRepository.findById(id)
+                .orElseThrow(() -> new ElementNotFoundException(MessageFormat.format("Пользователь с ид {0} не найден", id)));
 
-        if (oldUser.isEmpty()) {
-            throw new ElementNotFoundException(MessageFormat.format("Пользователь с ид {0} не найден", id));
-        }
         User newUser = UserMapper.toUser(newDtoUser);
         Optional<User> user = userRepository.findByEmailIgnoreCase(newDtoUser.getEmail());
         if (user.isPresent() && !newUser.getId().equals(user.get().getId())) {
@@ -44,31 +42,27 @@ public class UserServiceImpl implements UserService {
 
         newUser.setId(id);
         if (newUser.getEmail() != null) {
-            oldUser.get().setEmail(newUser.getEmail());
+            oldUser.setEmail(newUser.getEmail());
         }
         if (newUser.getName() != null) {
-            oldUser.get().setName(newUser.getName());
+            oldUser.setName(newUser.getName());
         }
-        return UserMapper.toUserDto(userRepository.save(oldUser.get()));
+        return UserMapper.toUserDto(userRepository.save(oldUser));
     }
 
     @Override
     public UserDto getById(Integer id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            return UserMapper.toUserDto(user.get());
-        }
-        throw new ElementNotFoundException(MessageFormat.format("id = {0} не найден", id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ElementNotFoundException(MessageFormat.format("id = {0} не найден", id)));
+        return UserMapper.toUserDto(user);
+
     }
 
     @Override
     public void delete(Integer id) {
 
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            userRepository.delete(user.get());
-        } else {
-            throw new ElementNotFoundException(MessageFormat.format("id = {0} не найден", id));
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ElementNotFoundException(MessageFormat.format("id = {0} не найден", id)));
+        userRepository.delete(user);
     }
 }

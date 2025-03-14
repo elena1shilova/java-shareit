@@ -12,5 +12,8 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
             " where i.owner.id = ?1 ")
     List<Item> findByOwnerId(Integer userId);
 
-    List<Item> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description);
+    @Query("SELECT i FROM Item i" +
+            " WHERE UPPER(i.name) LIKE %:text% AND i.available = true" +
+            " OR UPPER(i.description) LIKE %:text% AND i.available = true")
+    List<Item> searchItemsByText(String text);
 }
