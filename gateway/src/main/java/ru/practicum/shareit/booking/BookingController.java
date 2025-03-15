@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.marker.OnCreate;
 
 
 @Controller
@@ -29,7 +30,7 @@ public class BookingController {
     private final BookingClient bookingClient;
 
     @GetMapping
-    public ResponseEntity<Object> getBookings(@RequestHeader("X-Sharer-User-Id") Integer userId,
+    public ResponseEntity<Object> getBookings(@NotNull @RequestHeader("X-Sharer-User-Id") Integer userId,
                                               @RequestParam(name = "state", defaultValue = "all") String stateParam,
                                               @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                               @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -40,15 +41,15 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                           @RequestBody BookItemRequestDto requestDto) {
+    public ResponseEntity<Object> bookItem(@NotNull @RequestHeader("X-Sharer-User-Id") Integer userId,
+                                           @Validated(OnCreate.class) @RequestBody BookItemRequestDto requestDto) {
         log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.bookItem(userId, requestDto);
     }
 
     @GetMapping("/{bookingId}")
-    public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                             @PathVariable Integer bookingId) {
+    public ResponseEntity<Object> getBooking(@NotNull @RequestHeader("X-Sharer-User-Id") Integer userId,
+                                             @NotNull @PathVariable Integer bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
     }
