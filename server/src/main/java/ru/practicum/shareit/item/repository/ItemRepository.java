@@ -16,4 +16,6 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
             " WHERE UPPER(i.name) LIKE %:text% AND i.available = true" +
             " OR UPPER(i.description) LIKE %:text% AND i.available = true")
     List<Item> searchItemsByText(String text);
+
+    List<Item> findAllByRequest_IdIn(List<Integer> list);
 }
