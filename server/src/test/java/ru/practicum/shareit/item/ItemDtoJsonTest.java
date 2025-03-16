@@ -48,9 +48,9 @@ public class ItemDtoJsonTest {
 
         assertThat(violations).hasSize(3);
         assertThat(violations).extracting("message").contains(
-                "не должно быть пустым",
-                "не должно равняться null",
-                "не должно быть пустым"
+                "must not be blank",
+                "must not be null",
+                "must not be blank"
         );
     }
 }
