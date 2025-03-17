@@ -47,6 +47,26 @@ public class ItemControllerIntegrationTest {
                 .andExpect(jsonPath("$.description").value("Test Description"))
                 .andExpect(jsonPath("$.available").value(true))
                 .andExpect(jsonPath("$.owner.id").value(1));
+
+        itemDto.setRequestId(500);
+        mockMvc.perform(post("/items")
+                        .header("X-Sharer-User-Id", 1)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(itemDto)))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(post("/items")
+                        .header("X-Sharer-User-Id", 1000)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(itemDto)))
+                .andExpect(status().isNotFound());
+
+        itemDto.setRequestId(123);
+        mockMvc.perform(post("/items")
+                        .header("X-Sharer-User-Id", 1)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(itemDto)))
+                .andExpect(status().isOk());
     }
 
     @Test

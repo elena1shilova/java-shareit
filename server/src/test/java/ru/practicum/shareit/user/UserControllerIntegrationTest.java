@@ -50,6 +50,19 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
+    void createExceptionTest() throws Exception {
+
+        UserDto userDto = new UserDto();
+        userDto.setName("QWER");
+        userDto.setEmail("Hermina_Osinski43@hotmail.com");
+
+        mockMvc.perform(post("/users")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
     void updateTest() throws Exception {
 
         UserDto userDto = new UserDto();
@@ -63,6 +76,23 @@ public class UserControllerIntegrationTest {
                 .andExpect(jsonPath("$.id").value(101))
                 .andExpect(jsonPath("$.name").value("QAZWSX"))
                 .andExpect(jsonPath("$.email").value("QAZWSX@hotmail.com"));
+
+        mockMvc.perform(patch("/users/105")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateExceptionTest() throws Exception {
+
+        UserDto userDto = new UserDto();
+        userDto.setName("QWER");
+        userDto.setEmail("Holden_Powlowski@yahoo.com");
+        mockMvc.perform(patch("/users/101")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -88,5 +118,8 @@ public class UserControllerIntegrationTest {
                 ElementNotFoundException.class,
                 () -> userService.getById(102)
         );
+
+        mockMvc.perform(delete("/users/105"))
+                .andExpect(status().isNotFound());
     }
 }

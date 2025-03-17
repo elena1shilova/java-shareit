@@ -43,6 +43,12 @@ public class RequestControllerIntegrationTest {
                 .andExpect(jsonPath("$.description").value("Test Description"))
                 .andExpect(jsonPath("$.requestorId").value(10))
                 .andExpect(jsonPath("$.created").isNotEmpty());
+
+        mockMvc.perform(post("/requests")
+                        .header("X-Sharer-User-Id", 1000)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(itemRequestDto)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -55,6 +61,10 @@ public class RequestControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].description").value("requestors2"))
                 .andExpect(jsonPath("$[0].requestorId").value(11))
                 .andExpect(jsonPath("$[0].created").isNotEmpty());
+
+        mockMvc.perform(get("/requests")
+                        .header("X-Sharer-User-Id", 13))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -75,5 +85,8 @@ public class RequestControllerIntegrationTest {
                 .andExpect(jsonPath("$.description").value("requestors4"))
                 .andExpect(jsonPath("$.requestorId").value(12))
                 .andExpect(jsonPath("$.created").isNotEmpty());
+
+        mockMvc.perform(get("/requests/10300"))
+                .andExpect(status().isNotFound());
     }
 }

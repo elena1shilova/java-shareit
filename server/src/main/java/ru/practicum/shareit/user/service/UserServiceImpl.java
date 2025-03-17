@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
         User newUser = UserMapper.toUser(newDtoUser);
         Optional<User> user = userRepository.findByEmailIgnoreCase(newDtoUser.getEmail());
-        if (user.isPresent() && !newUser.getId().equals(user.get().getId())) {
+        if (user.isPresent() && !id.equals(user.get().getId())) {
             throw new RuntimeException("Такой email уже зарегистрирован");
         }
 

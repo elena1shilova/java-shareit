@@ -6,6 +6,8 @@ INSERT INTO users(id, name, email)
 VALUES(100, 'Melody Altenwerth DDS', 'Hermina_Osinski43@hotmail.com');
 INSERT INTO users(id, name, email)
 VALUES(101, 'Roman Ferry', 'Carol_Rodriguez5@hotmail.com');
+INSERT INTO users(id, name, email)
+VALUES(102, 'Roman Ferry', 'Carol_Rodriguez5555@hotmail.com');
 INSERT INTO items (id, name, description, available, owner_id)
 VALUES(100, 'Test Item', 'Test Description', true, 100);
 INSERT INTO bookings
@@ -17,3 +19,6 @@ VALUES(101, '2025-05-20 19:22:35.000', '2025-05-25 19:22:35.000', 100, 100, 'REJ
 INSERT INTO bookings
 (id, start_date, end_date, item_id, booker_id, status)
 VALUES(102, '2025-05-20 19:22:35.000', '2025-05-25 19:22:35.000', 100, 100, 'WAITING');
+INSERT INTO bookings
+(id, start_date, end_date, item_id, booker_id, status)
+VALUES(103, '2025-05-20 19:22:35.000', '2025-05-25 19:22:35.000', 100, 100, 'WAITING');
