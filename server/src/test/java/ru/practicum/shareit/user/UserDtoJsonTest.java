@@ -1,17 +1,10 @@
 package ru.practicum.shareit.user;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
-import ru.practicum.shareit.marker.OnCreate;
 import ru.practicum.shareit.user.dto.UserDto;
-
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,26 +15,17 @@ public class UserDtoJsonTest {
 
     @Test
     public void testDeserialize() throws Exception {
-        String content = "{\"id\":1,\"name\":\"Test User\",\"email\":\"test@mail.ru\"}";
-        UserDto userDto = new UserDto(1, "Test User", "test@mail.ru");
+        var dto = new UserDto();
+        dto.setId(1);
+        dto.setName("Test User");
+        dto.setEmail("test@mail.ru");
 
-        assertThat(json.parseObject(content).getId()).isEqualTo(1);
-        assertThat(json.parseObject(content).getName()).isEqualTo("Test User");
-    }
-
-    @Test
-    public void testValidation() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        UserDto userDto = new UserDto();
-        userDto.setEmail("");
-
-        Set<ConstraintViolation<UserDto>> violationsEmpty = validator.validate(userDto, OnCreate.class);
-
-        assertThat(violationsEmpty).hasSize(1);
-        assertThat(violationsEmpty).extracting("message").contains(
-                "must not be blank"
-        );
+        var result = json.write(dto);
+        assertThat(result).hasJsonPath("$.id");
+        assertThat(result).hasJsonPath("$.name");
+        assertThat(result).hasJsonPath("$.email");
+        assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(dto.getId());
+        assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo(dto.getName());
+        assertThat(result).extractingJsonPathStringValue("$.email").isEqualTo(dto.getEmail());
     }
 }
