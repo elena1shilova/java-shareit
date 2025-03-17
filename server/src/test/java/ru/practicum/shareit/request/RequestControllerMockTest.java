@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -34,8 +33,12 @@ public class RequestControllerMockTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final ItemRequestDto REQ_DTO = new ItemRequestDto(1, "Test Description",
-            100, LocalDateTime.now(), List.of(new Item()));
+    private static final ItemRequestDto REQ_DTO = ItemRequestDto.builder()
+            .id(1)
+            .description("Test Description")
+            .requestorId(100)
+            .created(LocalDateTime.now())
+            .build();
 
     private static final List<ItemRequestDto> REQ_DTO_LIST = List.of(REQ_DTO);
 

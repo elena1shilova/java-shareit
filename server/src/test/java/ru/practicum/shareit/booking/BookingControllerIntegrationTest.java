@@ -27,18 +27,19 @@ public class BookingControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static final BookingDto BOOKING_DTO = BookingDto.builder()
+            .start(LocalDateTime.now().plusMinutes(1))
+            .end(LocalDateTime.now().plusMinutes(15))
+            .itemId(100)
+            .build();
+
     @Test
     void createTest() throws Exception {
-
-        BookingDto bookingDto = new BookingDto();
-        bookingDto.setStart(LocalDateTime.now().plusMinutes(1));
-        bookingDto.setEnd(LocalDateTime.now().plusMinutes(15));
-        bookingDto.setItemId(100);
 
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", 100)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(bookingDto)))
+                        .content(objectMapper.writeValueAsString(BOOKING_DTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.start").isNotEmpty())
@@ -49,11 +50,6 @@ public class BookingControllerIntegrationTest {
 
     @Test
     void findAllForStateTest() throws Exception {
-
-        BookingDto bookingDto = new BookingDto();
-        bookingDto.setStart(LocalDateTime.now().plusMinutes(1));
-        bookingDto.setEnd(LocalDateTime.now().plusMinutes(15));
-        bookingDto.setItemId(100);
 
         mockMvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", 100)

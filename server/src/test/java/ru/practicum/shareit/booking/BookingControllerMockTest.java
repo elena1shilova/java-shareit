@@ -10,7 +10,6 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.enums.State;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -38,15 +37,35 @@ public class BookingControllerMockTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final User USER = new User(100, "Test User", "test@mail.ru");
-    private static final BookingDto BOOKING_DTO = new BookingDto(1, LocalDateTime.now().plusMinutes(1), LocalDateTime.now().plusMinutes(15),
-            100, new Item(), USER, Status.WAITING);
-
-    private static final BookingDto BOOKING_DTO_APPR = new BookingDto(2, LocalDateTime.now().plusMinutes(1), LocalDateTime.now().plusMinutes(15),
-            100, new Item(), USER, Status.APPROVED);
-
-    private static final BookingDto BOOKING_DTO_REJ = new BookingDto(3, LocalDateTime.now().plusMinutes(1), LocalDateTime.now().plusMinutes(15),
-            100, new Item(), USER, Status.REJECTED);
+    private static final User USER = User.builder()
+            .id(100)
+            .name("Test User")
+            .email("test@mail.ru")
+            .build();
+    private static final BookingDto BOOKING_DTO = BookingDto.builder()
+            .id(1)
+            .start(LocalDateTime.now().plusMinutes(1))
+            .end(LocalDateTime.now().plusMinutes(15))
+            .itemId(100)
+            .booker(USER)
+            .status(Status.WAITING)
+            .build();
+    private static final BookingDto BOOKING_DTO_APPR = BookingDto.builder()
+            .id(2)
+            .start(LocalDateTime.now().plusMinutes(1))
+            .end(LocalDateTime.now().plusMinutes(15))
+            .itemId(100)
+            .booker(USER)
+            .status(Status.APPROVED)
+            .build();
+    private static final BookingDto BOOKING_DTO_REJ = BookingDto.builder()
+            .id(3)
+            .start(LocalDateTime.now().plusMinutes(1))
+            .end(LocalDateTime.now().plusMinutes(15))
+            .itemId(100)
+            .booker(USER)
+            .status(Status.REJECTED)
+            .build();
 
     private static final List<BookingDto> BOOKING_DTO_LIST = List.of(
             BOOKING_DTO_REJ, BOOKING_DTO, BOOKING_DTO_APPR

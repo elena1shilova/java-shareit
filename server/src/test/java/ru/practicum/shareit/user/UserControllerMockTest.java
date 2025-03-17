@@ -34,8 +34,17 @@ public class UserControllerMockTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final UserDto USR_DTO = new UserDto(1, "Test User", "test@mail.ru");
-    private static final UserDto USR_DTO_UPDATE = new UserDto(1, "Test User Update", "test_update@mail.ru");
+    private static final UserDto USR_DTO = UserDto.builder()
+            .id(1)
+            .name("Test User")
+            .email("test@mail.ru")
+            .build();
+
+    private static final UserDto USR_DTO_UPDATE = UserDto.builder()
+            .id(1)
+            .name("Test User Update")
+            .email("test_update@mail.ru")
+            .build();
 
     @Test
     void createTest() throws Exception {

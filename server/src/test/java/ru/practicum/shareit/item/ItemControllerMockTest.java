@@ -8,7 +8,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.DateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -41,11 +40,22 @@ public class ItemControllerMockTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final ItemDto ITEM_DTO = new ItemDto(1, "Test Item", "Test Description", true, new User(),
-            123, new DateDto(), new DateDto(), List.of(new Comment()));
+    private static final ItemDto ITEM_DTO = ItemDto.builder()
+            .id(1)
+            .name("Test Item")
+            .description("Test Description")
+            .available(true)
+            .requestId(123)
+            .build();
 
-    private static final ItemDto ITEM_DTO_UPDATE = new ItemDto(1, "Updated Test Item", "Test Description", true, new User(),
-            123, new DateDto(), new DateDto(), List.of(new Comment(1, "Great item!", new Item(), new User(), LocalDateTime.now())));
+    private static final ItemDto ITEM_DTO_UPDATE = ItemDto.builder()
+            .id(1)
+            .name("Updated Test Item")
+            .description("Test Description")
+            .available(true)
+            .requestId(123)
+            .comments(List.of(new Comment(1, "Great item!", new Item(), new User(), LocalDateTime.now())))
+            .build();
 
     @Test
     void testCreateItemTest() throws Exception {

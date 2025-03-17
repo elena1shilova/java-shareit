@@ -29,6 +29,12 @@ public class ItemControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static final ItemDto ITEM_DTO_UPDATE = ItemDto.builder()
+            .name("Test Item New")
+            .description("Test Description New")
+            .available(true)
+            .build();
+
     @Test
     void createTest() throws Exception {
 
@@ -72,15 +78,10 @@ public class ItemControllerIntegrationTest {
     @Test
     void updateTest() throws Exception {
 
-        ItemDto itemDto = new ItemDto();
-        itemDto.setName("Test Item New");
-        itemDto.setDescription("Test Description New");
-        itemDto.setAvailable(true);
-
         mockMvc.perform(patch("/items/101")
                         .header("X-Sharer-User-Id", 1)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(itemDto)))
+                        .content(objectMapper.writeValueAsString(ITEM_DTO_UPDATE)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(101))
                 .andExpect(jsonPath("$.name").value("Test Item New"))

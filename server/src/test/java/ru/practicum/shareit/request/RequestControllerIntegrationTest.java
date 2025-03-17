@@ -26,18 +26,19 @@ public class RequestControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static final ItemRequestDto ITEM_REQUEST_DTO_CREATE = ItemRequestDto.builder()
+            .description("Test Description")
+            .requestorId(100)
+            .created(LocalDateTime.now())
+            .build();
+
     @Test
     void createTest() throws Exception {
-
-        ItemRequestDto itemRequestDto = new ItemRequestDto();
-        itemRequestDto.setDescription("Test Description");
-        itemRequestDto.setRequestorId(100);
-        itemRequestDto.setCreated(LocalDateTime.now());
 
         mockMvc.perform(post("/requests")
                         .header("X-Sharer-User-Id", 10)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(itemRequestDto)))
+                        .content(objectMapper.writeValueAsString(ITEM_REQUEST_DTO_CREATE)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.description").value("Test Description"))
@@ -47,7 +48,7 @@ public class RequestControllerIntegrationTest {
         mockMvc.perform(post("/requests")
                         .header("X-Sharer-User-Id", 1000)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(itemRequestDto)))
+                        .content(objectMapper.writeValueAsString(ITEM_REQUEST_DTO_CREATE)))
                 .andExpect(status().isNotFound());
     }
 
