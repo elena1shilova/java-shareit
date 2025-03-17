@@ -5,9 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.item.dto.ItemDto;
+
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -76,6 +80,13 @@ public class ItemControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].available").value(true))
                 .andExpect(jsonPath("$[0].owner.id").value(1))
                 .andExpect(jsonPath("$[0].requestId").value(123));
+
+        mockMvc.perform(get("/items")
+                        .header("X-Sharer-User-Id", 3))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].lastBooking").isNotEmpty())
+                .andExpect(jsonPath("$[0].nextBooking").isNotEmpty());
     }
 
     @Test
@@ -90,5 +101,45 @@ public class ItemControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].available").value(true))
                 .andExpect(jsonPath("$[0].owner.id").value(1))
                 .andExpect(jsonPath("$[0].requestId").value(123));
+    }
+
+    @Test
+    public void testGetItemByIdTest() throws Exception {
+
+        mockMvc.perform(get("/items/102"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(102))
+                .andExpect(jsonPath("$.name").value("WQWQ"));
+    }
+
+    @Test
+    @Transactional
+    public void testCreateCommentTest() throws Exception {
+
+        mockMvc.perform(post("/items/103/comment")
+                        .header("X-Sharer-User-Id", 2)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("text", "Great item!"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.text").value("Great item!"));
+    }
+
+    @Test
+    @Transactional
+    public void testCreateCommentExceptionTest() throws Exception {
+
+        mockMvc.perform(post("/items/103/comment")
+                        .header("X-Sharer-User-Id", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("text", "Great item!"))))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(post("/items/102/comment")
+                        .header("X-Sharer-User-Id", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("text", "Great item!"))))
+                .andExpect(status().isNotFound());
+
     }
 }

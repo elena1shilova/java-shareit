@@ -11,6 +11,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.DateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 
@@ -44,10 +45,10 @@ public class ItemControllerMockTest {
             123, new DateDto(), new DateDto(), List.of(new Comment()));
 
     private static final ItemDto ITEM_DTO_UPDATE = new ItemDto(1, "Updated Test Item", "Test Description", true, new User(),
-            123, new DateDto(), new DateDto(), List.of(new Comment()));
+            123, new DateDto(), new DateDto(), List.of(new Comment(1, "Great item!", new Item(), new User(), LocalDateTime.now())));
 
     @Test
-    void testCreateItem() throws Exception {
+    void testCreateItemTest() throws Exception {
 
         when(itemService.create(any(ItemDto.class), anyInt())).thenReturn(ITEM_DTO);
 
@@ -61,7 +62,7 @@ public class ItemControllerMockTest {
     }
 
     @Test
-    public void testUpdateItem() throws Exception {
+    public void testUpdateItemTest() throws Exception {
 
         when(itemService.update(anyInt(), any(ItemDto.class), anyInt())).thenReturn(ITEM_DTO_UPDATE);
 
@@ -75,7 +76,7 @@ public class ItemControllerMockTest {
     }
 
     @Test
-    public void testGetItemById() throws Exception {
+    public void testGetItemByIdTest() throws Exception {
 
         when(itemService.getById(anyInt())).thenReturn(ITEM_DTO);
 
@@ -86,7 +87,7 @@ public class ItemControllerMockTest {
     }
 
     @Test
-    public void testGetAllItems() throws Exception {
+    public void testGetAllItemsTest() throws Exception {
         List<ItemDto> items = List.of(ITEM_DTO);
         when(itemService.getAll(anyInt())).thenReturn(items);
 
@@ -98,7 +99,7 @@ public class ItemControllerMockTest {
     }
 
     @Test
-    public void testSearchItems() throws Exception {
+    public void testSearchItemsTest() throws Exception {
         List<ItemDto> items = List.of(ITEM_DTO);
         when(itemService.searchText(anyString())).thenReturn(items);
 
@@ -110,7 +111,7 @@ public class ItemControllerMockTest {
     }
 
     @Test
-    public void testCreateComment() throws Exception {
+    public void testCreateCommentTest() throws Exception {
         CommentDto commentDto = new CommentDto(1, "Great item!", 1, "", LocalDateTime.now());
         when(itemService.createComment(anyString(), anyInt(), anyInt())).thenReturn(commentDto);
 

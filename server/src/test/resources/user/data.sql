@@ -1,3 +1,4 @@
+DELETE FROM bookings;
 DELETE FROM items;
 DELETE FROM requestors;
 DELETE FROM users;

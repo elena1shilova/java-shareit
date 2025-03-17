@@ -41,7 +41,7 @@ public class UserDtoJsonTest {
 
         assertThat(violationsEmpty).hasSize(1);
         assertThat(violationsEmpty).extracting("message").contains(
-                "must not be blank"
+                "не должно быть пустым"
         );
     }
 }

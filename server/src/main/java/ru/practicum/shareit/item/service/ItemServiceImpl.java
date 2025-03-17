@@ -128,6 +128,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void addDateLastAndNext(ItemDto dto, List<Booking> bookingList, LocalDateTime now) {
+        if (bookingList == null) {
+            return;
+        }
         if (bookingList.size() > 1) {
             if (bookingList.get(0).getStart().isBefore(now)) {
                 dto.setLastBooking(
